@@ -1,17 +1,56 @@
-import { View, Text, StyleSheet } from "react-native";
-
+import { View, Text, StyleSheet, Alert } from "react-native";
+import { useState, useEffect } from "react";
 import GameButton from "../components/GameButton";
 import Colors from "../constants/colors";
-const GameScreen = ({ chosenNumber }) => {
+const GameScreen = ({ chosenNumber, onGameOver }) => {
+  let minBoundary = 1;
+  let maxBoundary = 100;
+  const initialGuess = getRandomNumber(1, 100, chosenNumber);
+  const [guessedNumber, setGuessedNumber] = useState(initialGuess);
+
+  useEffect(() => {
+    if (guessedNumber === chosenNumber) {
+      onGameOver();
+    }
+  }, [guessedNumber, onGameOver, chosenNumber]);
+
+  function getRandomNumber(min, max, exclude) {
+    const rand = Math.floor(Math.random() * (max - min)) + min;
+
+    if (rand === exclude) {
+      return getRandomNumber(min, max, exclude);
+    } else {
+      return rand;
+    }
+  }
+  function NextHandler(direction) {
+    if (
+      (direction === "lower" && guessedNumber < chosenNumber) ||
+      (direction === "greater" && guessedNumber > chosenNumber)
+    ) {
+      Alert.alert("Liar", "You know that is wrong", [
+        { text: "Sorry", style: "cancel" },
+      ]);
+      return;
+    }
+    if (direction === "lower") {
+      maxBoundary = guessedNumber;
+    } else {
+      minBoundary = guessedNumber + 1;
+    }
+    console.log(minBoundary, maxBoundary);
+    const newRand = getRandomNumber(minBoundary, maxBoundary, guessedNumber);
+    setGuessedNumber(newRand);
+  }
   return (
     <View style={styles.screen}>
       <View style={styles.funcContainer}>
         <Text style={styles.innerText}>Computer's Guess</Text>
-        <Text style={styles.guessText}>{chosenNumber}</Text>
+        <Text style={styles.guessText}>{guessedNumber}</Text>
         <Text style={styles.innerText}>Higher or Lower?</Text>
         <View style={styles.buttonContainer}>
-          <GameButton title={"-"} />
-          <GameButton title={"+"} />
+          <GameButton title={"-"} onPress={NextHandler.bind(this, "lower")} />
+          <GameButton title={"+"} onPress={NextHandler.bind(this, "greater")} />
         </View>
       </View>
       <View>
