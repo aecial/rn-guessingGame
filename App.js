@@ -10,18 +10,24 @@ import AppLoading from "expo-app-loading";
 export default function App() {
   const [userNumber, setUserNumber] = useState();
   const [gameIsOver, setGameIsOver] = useState(true);
+  const [guessRounds, setGuessRounds] = useState(0);
   const [fontsLoaded] = useFonts({
     luxurious: require("./assets/fonts/LuxuriousRoman-Regular.ttf"),
   });
   if (!fontsLoaded) {
     return <AppLoading />;
   }
-  function gameOverHandler() {
+  function gameOverHandler(roundNumber) {
     setGameIsOver(true);
+    setGuessRounds(roundNumber);
   }
   const pickNumber = (choseNumber) => {
     setUserNumber(choseNumber);
     setGameIsOver(false);
+  };
+  const startNewGameHandler = () => {
+    setUserNumber(null);
+    setGuessRounds(0);
   };
 
   let screen = <StartGameScreen pickNumber={pickNumber} />;
@@ -31,7 +37,13 @@ export default function App() {
     );
   }
   if (gameIsOver && userNumber) {
-    screen = <GameOverScreen />;
+    screen = (
+      <GameOverScreen
+        chosenNumber={userNumber}
+        roundsNumber={guessRounds}
+        onStartNewGame={startNewGameHandler}
+      />
+    );
   }
   return (
     <>

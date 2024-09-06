@@ -1,29 +1,35 @@
-import { View, Text, StyleSheet, Alert } from "react-native";
+import { View, Text, StyleSheet, Alert, FlatList } from "react-native";
 import { useState, useEffect } from "react";
 import GameButton from "../components/GameButton";
 import Colors from "../constants/colors";
 import Ionicons from "@expo/vector-icons/Ionicons";
+
 const GameScreen = ({ chosenNumber, onGameOver }) => {
-  let minBoundary = 1;
-  let maxBoundary = 100;
-  const initialGuess = getRandomNumber(1, 100, chosenNumber);
-  const [guessedNumber, setGuessedNumber] = useState(initialGuess);
+  const [minBoundary, setMinBoundary] = useState(1);
+  const [maxBoundary, setMaxBoundary] = useState(100);
+  const [guessedNumber, setGuessedNumber] = useState(
+    getRandomNumber(1, 100, chosenNumber)
+  );
+  const [guessRounds, setGuessRounds] = useState([guessedNumber]);
 
   useEffect(() => {
     if (guessedNumber === chosenNumber) {
-      onGameOver();
+      onGameOver(guessRounds.length);
     }
-  }, [guessedNumber, onGameOver, chosenNumber]);
+  }, [guessedNumber, onGameOver, chosenNumber, guessRounds]);
 
   function getRandomNumber(min, max, exclude) {
-    const rand = Math.floor(Math.random() * (max - min)) + min;
-
-    if (rand === exclude) {
-      return getRandomNumber(min, max, exclude);
-    } else {
-      return rand;
+    const range = max - min;
+    if (range <= 1) {
+      return min; // Avoid infinite recursion
     }
+    let rand;
+    do {
+      rand = Math.floor(Math.random() * range) + min;
+    } while (rand === exclude);
+    return rand;
   }
+
   function NextHandler(direction) {
     if (
       (direction === "lower" && guessedNumber < chosenNumber) ||
@@ -35,14 +41,16 @@ const GameScreen = ({ chosenNumber, onGameOver }) => {
       return;
     }
     if (direction === "lower") {
-      maxBoundary = guessedNumber;
+      setMaxBoundary(guessedNumber);
     } else {
-      minBoundary = guessedNumber + 1;
+      setMinBoundary(guessedNumber + 1);
     }
-    console.log(minBoundary, maxBoundary);
+
     const newRand = getRandomNumber(minBoundary, maxBoundary, guessedNumber);
     setGuessedNumber(newRand);
+    setGuessRounds((prev) => [newRand, ...prev]);
   }
+
   return (
     <View style={styles.screen}>
       <View style={styles.funcContainer}>
@@ -52,20 +60,26 @@ const GameScreen = ({ chosenNumber, onGameOver }) => {
         <View style={styles.buttonContainer}>
           <GameButton
             title={<Ionicons name="remove" size={24} color={Colors.primary} />}
-            onPress={NextHandler.bind(this, "lower")}
+            onPress={() => NextHandler("lower")}
           />
           <GameButton
             title={<Ionicons name="add" size={24} color={Colors.primary} />}
-            onPress={NextHandler.bind(this, "greater")}
+            onPress={() => NextHandler("greater")}
           />
         </View>
       </View>
       <View>
         <Text style={[styles.innerText, styles.whiteOutline]}>Log Rounds</Text>
+        <FlatList
+          data={guessRounds}
+          renderItem={({ item }) => <Text style={styles.logText}>{item}</Text>}
+          keyExtractor={(item, index) => index.toString()}
+        />
       </View>
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
@@ -105,5 +119,12 @@ const styles = StyleSheet.create({
     borderColor: Colors.neutral,
     padding: 8,
   },
+  logText: {
+    fontSize: 16,
+    color: Colors.neutral,
+    textAlign: "center",
+    marginVertical: 4,
+  },
 });
+
 export default GameScreen;
