@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, Alert } from "react-native";
 import { useState, useEffect } from "react";
 import GameButton from "../components/GameButton";
 import Colors from "../constants/colors";
+import Ionicons from "@expo/vector-icons/Ionicons";
 const GameScreen = ({ chosenNumber, onGameOver }) => {
   let minBoundary = 1;
   let maxBoundary = 100;
@@ -49,8 +50,14 @@ const GameScreen = ({ chosenNumber, onGameOver }) => {
         <Text style={styles.guessText}>{guessedNumber}</Text>
         <Text style={styles.innerText}>Higher or Lower?</Text>
         <View style={styles.buttonContainer}>
-          <GameButton title={"-"} onPress={NextHandler.bind(this, "lower")} />
-          <GameButton title={"+"} onPress={NextHandler.bind(this, "greater")} />
+          <GameButton
+            title={<Ionicons name="remove" size={24} color={Colors.primary} />}
+            onPress={NextHandler.bind(this, "lower")}
+          />
+          <GameButton
+            title={<Ionicons name="add" size={24} color={Colors.primary} />}
+            onPress={NextHandler.bind(this, "greater")}
+          />
         </View>
       </View>
       <View>
@@ -81,6 +88,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   innerText: {
+    fontFamily: "luxurious",
     textAlign: "center",
     fontSize: 24,
     color: Colors.neutral,
