@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import GameButton from "../components/GameButton";
 import Colors from "../constants/colors";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import RoundLogs from "../components/RoundLogs";
 
 const GameScreen = ({ chosenNumber, onGameOver }) => {
   const [minBoundary, setMinBoundary] = useState(1);
@@ -56,7 +57,7 @@ const GameScreen = ({ chosenNumber, onGameOver }) => {
       <View style={styles.funcContainer}>
         <Text style={styles.innerText}>Computer's Guess</Text>
         <Text style={styles.guessText}>{guessedNumber}</Text>
-        <Text style={styles.innerText}>Higher or Lower?</Text>
+        <Text style={styles.innerText}>Lower or Higher?</Text>
         <View style={styles.buttonContainer}>
           <GameButton
             title={<Ionicons name="remove" size={24} color={Colors.primary} />}
@@ -68,11 +69,11 @@ const GameScreen = ({ chosenNumber, onGameOver }) => {
           />
         </View>
       </View>
-      <View>
+      <View style={styles.logContainer}>
         <Text style={[styles.innerText, styles.whiteOutline]}>Log Rounds</Text>
         <FlatList
           data={guessRounds}
-          renderItem={({ item }) => <Text style={styles.logText}>{item}</Text>}
+          renderItem={({ item }) => <RoundLogs item={item} />}
           keyExtractor={(item, index) => index.toString()}
         />
       </View>
@@ -82,11 +83,10 @@ const GameScreen = ({ chosenNumber, onGameOver }) => {
 
 const styles = StyleSheet.create({
   screen: {
-    flex: 1,
+    flex: 1, // Ensure the screen takes up the full height of the device
     alignItems: "center",
     padding: 44,
     gap: 40,
-    marginTop: 100,
   },
   funcContainer: {
     width: "100%",
@@ -118,12 +118,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.neutral,
     padding: 8,
+    marginBottom: 8,
   },
-  logText: {
-    fontSize: 16,
-    color: Colors.neutral,
-    textAlign: "center",
-    marginVertical: 4,
+  logContainer: {
+    flex: 1, // Allow the FlatList to take available space
+    width: "100%",
+    marginTop: 16, // Add some margin to separate from the buttons
   },
 });
 

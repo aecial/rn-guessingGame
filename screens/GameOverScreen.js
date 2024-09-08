@@ -23,9 +23,8 @@ const GameOverScreen = ({ roundsNumber, chosenNumber, onStartNewGame }) => {
 export default GameOverScreen;
 const styles = StyleSheet.create({
   screen: {
-    flex: 1,
     alignItems: "center",
-    padding: 44,
+    padding: 32,
     gap: 40,
   },
   funcContainer: {
@@ -50,13 +49,12 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   imgContainer: {
-    width: 300,
-    height: 300,
-    borderRadius: 150,
+    width: 250,
+    height: 250,
+    borderRadius: 125,
     borderWidth: 3,
     borderColor: Colors.primary,
     overflow: "hidden",
-    margin: 36,
   },
   image: {
     width: "100%",
