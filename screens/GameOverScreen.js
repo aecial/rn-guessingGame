@@ -51,6 +51,8 @@ const styles = StyleSheet.create({
   imgContainer: {
     width: 250,
     height: 250,
+    maxWidth: "75%",
+    maxHeight: "40%",
     borderRadius: 125,
     borderWidth: 3,
     borderColor: Colors.primary,
