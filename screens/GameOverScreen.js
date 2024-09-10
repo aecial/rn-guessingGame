@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, Dimensions } from "react-native";
 import Colors from "../constants/colors";
 import Button1 from "../components/Button1";
 const GameOverScreen = ({ roundsNumber, chosenNumber, onStartNewGame }) => {
@@ -21,11 +21,12 @@ const GameOverScreen = ({ roundsNumber, chosenNumber, onStartNewGame }) => {
 };
 
 export default GameOverScreen;
+const deviceWidth = Dimensions.get("window").width;
 const styles = StyleSheet.create({
   screen: {
     alignItems: "center",
     padding: 32,
-    gap: 40,
+    gap: deviceWidth < 360 ? 30 : 40,
   },
   funcContainer: {
     width: "100%",
