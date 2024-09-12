@@ -1,10 +1,18 @@
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
-import { StyleSheet, Text, View, Alert } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Alert,
+  Dimensions,
+  useWindowDimensions,
+} from "react-native";
 import InputDiv from "../components/InputDiv";
 import Colors from "../constants/colors";
 const StartGameScreen = ({ pickNumber }) => {
   const [enteredNumber, setEnteredNumber] = useState("");
+  const { width, height } = useWindowDimensions();
   const inputHandler = (enteredText) => {
     setEnteredNumber(enteredText);
   };
@@ -21,8 +29,15 @@ const StartGameScreen = ({ pickNumber }) => {
     }
     pickNumber(chosenNumber);
   };
+  const marginDistanceTop = height < 400 ? 30 : 100;
+  const paddingContainer = height < 400 ? 20 : 56;
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        { marginTop: marginDistanceTop, padding: paddingContainer },
+      ]}
+    >
       <Text style={styles.titleText}>Guess My Number</Text>
       <InputDiv
         enteredNumber={enteredNumber}
@@ -33,14 +48,13 @@ const StartGameScreen = ({ pickNumber }) => {
     </View>
   );
 };
+const deviceHeight = Dimensions.get("window").height;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
     // justifyContent: 'center',
-    padding: 56,
     gap: 40,
-    marginTop: 100,
   },
   titleText: {
     color: Colors.primary,
