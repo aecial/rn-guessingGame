@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet, Alert, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Alert,
+  FlatList,
+  useWindowDimensions,
+} from "react-native";
 import { useState, useEffect } from "react";
 import GameButton from "../components/GameButton";
 import Colors from "../constants/colors";
@@ -12,7 +19,7 @@ const GameScreen = ({ chosenNumber, onGameOver }) => {
     getRandomNumber(1, 100, chosenNumber)
   );
   const [guessRounds, setGuessRounds] = useState([guessedNumber]);
-
+  const { width, height } = useWindowDimensions();
   useEffect(() => {
     if (guessedNumber === chosenNumber) {
       onGameOver(guessRounds.length);
@@ -51,9 +58,8 @@ const GameScreen = ({ chosenNumber, onGameOver }) => {
     setGuessedNumber(newRand);
     setGuessRounds((prev) => [newRand, ...prev]);
   }
-
-  return (
-    <View style={styles.screen}>
+  let content = (
+    <>
       <View style={styles.funcContainer}>
         <Text style={styles.innerText}>Computer's Guess</Text>
         <Text style={styles.guessText}>{guessedNumber}</Text>
@@ -77,8 +83,43 @@ const GameScreen = ({ chosenNumber, onGameOver }) => {
           keyExtractor={(item, index) => index.toString()}
         />
       </View>
-    </View>
+    </>
   );
+  if (width > 500) {
+    content = (
+      <>
+        <View style={styles.funcContainer}>
+          <Text style={styles.innerText}>Computer's Guess</Text>
+
+          <Text style={styles.innerText}>Lower or Higher?</Text>
+          <View style={styles.buttonContainer}>
+            <GameButton
+              title={
+                <Ionicons name="remove" size={24} color={Colors.primary} />
+              }
+              onPress={() => NextHandler("lower")}
+            />
+            <Text style={styles.guessText}>{guessedNumber}</Text>
+            <GameButton
+              title={<Ionicons name="add" size={24} color={Colors.primary} />}
+              onPress={() => NextHandler("greater")}
+            />
+          </View>
+        </View>
+        <View style={styles.logContainer}>
+          <Text style={[styles.innerText, styles.whiteOutline]}>
+            Log Rounds
+          </Text>
+          <FlatList
+            data={guessRounds}
+            renderItem={({ item }) => <RoundLogs item={item} />}
+            keyExtractor={(item, index) => index.toString()}
+          />
+        </View>
+      </>
+    );
+  }
+  return <View style={styles.screen}>{content}</View>;
 };
 
 const styles = StyleSheet.create({
