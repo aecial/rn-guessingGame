@@ -1,22 +1,31 @@
-import { View, Text, StyleSheet, Image, Dimensions } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Dimensions,
+  ScrollView,
+} from "react-native";
 import Colors from "../constants/colors";
 import Button1 from "../components/Button1";
 const GameOverScreen = ({ roundsNumber, chosenNumber, onStartNewGame }) => {
   return (
-    <View style={styles.screen}>
-      <Text style={[styles.innerText, styles.borderPrimary]}>Game Over!</Text>
-      <View style={styles.imgContainer}>
-        <Image
-          style={styles.image}
-          source={require("../assets/images/success.jpg")}
-        />
+    <ScrollView style={{ flex: 1 }}>
+      <View style={styles.screen}>
+        <Text style={[styles.innerText, styles.borderPrimary]}>Game Over!</Text>
+        <View style={styles.imgContainer}>
+          <Image
+            style={styles.image}
+            source={require("../assets/images/success.jpg")}
+          />
+        </View>
+        <Text style={styles.MedText}>
+          Phone needed <Text style={styles.highlight}>{roundsNumber}</Text>{" "}
+          rounds to guess <Text style={styles.highlight}>{chosenNumber}</Text>
+        </Text>
+        <Button1 title={"Start New Game"} onPress={onStartNewGame} />
       </View>
-      <Text style={styles.MedText}>
-        Phone needed <Text style={styles.highlight}>{roundsNumber}</Text> rounds
-        to guess <Text style={styles.highlight}>{chosenNumber}</Text>
-      </Text>
-      <Button1 title={"Start New Game"} onPress={onStartNewGame} />
-    </View>
+    </ScrollView>
   );
 };
 
